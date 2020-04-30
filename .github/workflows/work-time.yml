@@ -61,7 +61,7 @@ jobs:
           git commit -m '完成時間の記載' && git push ${REPO} HEAD:${{github.event.pull_request.head.ref}}
 
       - name: file-update-notification
-        if: sucess()
+        if: success()
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
