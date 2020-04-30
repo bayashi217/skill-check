@@ -63,15 +63,15 @@ jobs:
       - name: file-update-notification
         if: sucess()
         uses: actions/github-script@0.9.0
-          with:
-            github-token: ${{secrets.GITHUB_TOKEN}}
-            work-time: ${WORK_TIME}
-            script: |
-              const work-time = core.getInput('work-time', {required: true})
-              github.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                body: `現在の作業時間は${work-time} (休憩時間を含む)`,
-                event: 'COMMENT'
-              })
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          work-time: ${WORK_TIME}
+          script: |
+            const work-time = core.getInput('work-time', {required: true})
+            github.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: `現在の作業時間は${work-time} (休憩時間を含む)`,
+              event: 'COMMENT'
+            })
