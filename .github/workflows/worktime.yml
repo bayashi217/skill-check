@@ -1,13 +1,13 @@
-name: work-time
+name: worktime
 
 on:
   pull_request:
     branches: master
-    types: [synchronize]
+    types: [edited]
 
 jobs:
-  work-time:
-    if: startsWith(github.event.pull_request.title, '[WIP]') && contains(github.event.pull_request.head.ref, 'feature/q')
+  worktime:
+    if: startsWith(github.event.pull_request.title, '[WIP]') != true && startsWith(github.event.changes.title.from, '[WIP]') && contains(github.event.pull_request.head.ref, 'feature/q')
     runs-on: ubuntu-latest
     env:
       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{github.event.pull_request.head.ref}}
+          fetch-depth: 0
 
       - name: get-worknum
         id: get-worknum
@@ -25,23 +26,35 @@ jobs:
       - name: get-measurement
         id: get-measurement
         run: |
-          set -o pipefail
-          work_time=$(git log master..${HEAD_REF} \
+          git pull
+          work_time=$(git --no-pager log \
             --oneline \
-            --pretty=format:'%cd' \
+            --pretty=format:'%cd %d' \
             --date=format:'%s' \
             --date-order \
             | awk '
-              NR == 1 { end = $0 }
-              END {
-                start = $0
-                period = end - start
-                if (period =< 0) {
-                  exit(1)
+              BEGIN {
+                start = 0;
+                end = 0;
+                period = 0;
+              }
+              NR == 1 { end = $1; }
+
+              /master/ {
+                if (period <= 0) {
+                  exit;
                 }
-                printf "%02d時間%02d分%02d秒\n", period / 3600, (period % 3600) / 60, period % 60
+                printf "%02d時間%02d分%02d秒\n", period / 3600, (period % 3600) / 60, period % 60;
+                exit;
+              }
+
+              {
+                start = $1;
+                period = end - start;
               }
             ')
+
+          [[ "${work_time}" == "" ]] && exit 1
 
           echo "::set-env name=WORK_TIME::${work_time}"
 
@@ -51,27 +64,26 @@ jobs:
         run: |
           filename="src/main/java/${WORK_NUM,,}/${WORK_NUM^^}.java"
           if [ ! -f "${filename}" ]; then
-            exit(1)
+            exit 1
           fi
 
           sed -i -r "s/(\/\/ 完成までの時間:).*/\1 ${WORK_TIME}/g" ${filename}
-          git config --global user.email "workflow@example.com"
-          git config --global user.name "workflow user"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
           git add ${filename}
-          git commit -m '完成時間の記載' && git push ${REPO} HEAD:${{github.event.pull_request.head.ref}}
+          git commit -m '実施時間の記載' && git push ${REPO} HEAD:${{github.event.pull_request.head.ref}}
 
       - name: file-update-notification
         if: success()
         uses: actions/github-script@0.9.0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
-          work-time: ${WORK_TIME}
           script: |
-            const work-time = core.getInput('work-time', {required: true})
+            var worktime = process.env.WORK_TIME;
             github.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
-              body: `現在の作業時間は${work-time} (休憩時間を含む)`,
+              body: `作業時間は${worktime} (休憩時間を含む)`,
               event: 'COMMENT'
             })
