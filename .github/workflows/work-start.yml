@@ -1,0 +1,39 @@
+name: work-start
+
+on:
+  create:
+    branches:
+      - feature/q[0-9]+
+      - feature/Q[0-9]+
+
+jobs:
+  work-start:
+    runs-on: ubuntu-latest
+    env:
+      REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
+      HEAD_REF: ${{github.ref}}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: start commit
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git commit --allow-empty -m "[${HEAD_REF#*feature/}]: 実施" && git push ${REPO} HEAD:${HEAD_REF}
+
+      - name: create pull request
+        if: success()
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          head-ref: ${{github.ref}}
+          script: |
+            const branch = core.getInput('head-ref', {required: true}).replace("refs/heads/", "");
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[WIP]${branch.replace('feature/', '').toUpperCase()}: 実施`,
+              head: `${branch}`,
+              base: 'master'
+            });
