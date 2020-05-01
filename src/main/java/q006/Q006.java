@@ -39,7 +39,6 @@ public class Q006 {
         List<IValue> resultList = new ArrayList<>();
         // 空白文字で区切ってループする
         for (String text: lineText.split("[\\s]+")) {
-            // TODO 一部処理だけ実装
             switch (text) {
                 case "+":   // 足し算
                     resultList.add(new PlusValue());
