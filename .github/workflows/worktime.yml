@@ -12,6 +12,7 @@ jobs:
     env:
       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
       HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      TZ: Asia/Tokyo
     steps:
       - name: checkout
         uses: actions/checkout@v2
