@@ -74,4 +74,4 @@ public class Q006 {
         System.out.println("出力）" + values.pop());
     }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 00時間14分58秒
