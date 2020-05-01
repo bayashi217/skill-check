@@ -40,7 +40,7 @@ public class Q003 {
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(openDataFile(), "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(openDataFile()));
         String del = "[ \\s,.;]";
         HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
         String line;
@@ -60,10 +60,11 @@ public class Q003 {
         }
         Map<String, Integer> tree = new TreeMap<>(dictionary);
         for (String word : tree.keySet()) {
-            if (word.equals("i")) {
-                word = word.toUpperCase();
+            String viewWord = word;
+            if (viewWord.equals("i")) {
+                viewWord = word.toUpperCase();
             }
-            System.out.println(word + "=" + tree.get(word));
+            System.out.println(viewWord + "=" + tree.get(word));
         }
     }
 }
