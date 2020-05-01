@@ -1,6 +1,11 @@
 package q003;
 
-import java.io.InputStream;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Q003 集計と並べ替え
@@ -32,6 +37,34 @@ public class Q003 {
      */
     private static InputStream openDataFile() {
         return Q003.class.getResourceAsStream("data.txt");
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(openDataFile(), "UTF-8"));
+        String del = "[ \\s,.;]";
+        HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] words = line.split(del);
+            for (String word : words) {
+                String lowerWord = word.toLowerCase();
+                if (lowerWord.equals("-") || lowerWord.equals("")) {
+                    continue;
+                }
+
+                if (!dictionary.containsKey(lowerWord)) {
+                    dictionary.put(lowerWord, 0);
+                }
+                dictionary.replace(lowerWord, dictionary.get(lowerWord) + 1);
+            }
+        }
+        Map<String, Integer> tree = new TreeMap<>(dictionary);
+        for (String word : tree.keySet()) {
+            if (word.equals("i")) {
+                word = word.toUpperCase();
+            }
+            System.out.println(word + "=" + tree.get(word));
+        }
     }
 }
 // 完成までの時間: xx時間 xx分
