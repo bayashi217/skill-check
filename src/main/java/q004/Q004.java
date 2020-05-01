@@ -27,4 +27,4 @@ public class Q004 {
         data.checkResult();
     }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 00時間02分23秒
