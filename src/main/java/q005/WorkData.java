@@ -19,4 +19,32 @@ public class WorkData {
 
     /** 作業時間(分) */
     private int workTime;
+
+    public WorkData(String number, String department, String position, String pCode, int workTime) {
+        this.number = number;
+        this.department = department;
+        this.position = position;
+        this.pCode = pCode;
+        this.workTime = workTime;
+    }
+
+    public int getWorkTime() {
+        return workTime;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getPCode() {
+        return pCode;
+    }
+
+    public String getPosition() {
+        return position;
+    }
 }
