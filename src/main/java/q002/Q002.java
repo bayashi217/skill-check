@@ -1,5 +1,8 @@
 package q002;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 /**
  * Q002 並べ替える
  *
@@ -45,5 +48,20 @@ public class Q002 {
             "14,林",
             "9,清水"
     };
+
+    static public void main(String[] args) {
+        HashMap<Integer, String> userList = new HashMap<Integer, String>();
+        for (String s : dataList) {
+            String[] user = s.split(",", 2);
+            userList.put(Integer.parseInt(user[0]), user[1]);
+        }
+
+        Object[] idList = userList.keySet().toArray();
+        Arrays.sort(idList);
+
+        for (Integer id : userList.keySet()) {
+            System.out.println(id + "," + userList.get(id));
+        }
+    }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 01時間19分56秒
