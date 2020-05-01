@@ -1,11 +1,12 @@
 package q006;
 
-import q006.value.DecimalValue;
-import q006.value.IValue;
-import q006.value.PlusValue;
+import q006.value.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * Q006 空気を読んで改修
@@ -43,12 +44,34 @@ public class Q006 {
                 case "+":   // 足し算
                     resultList.add(new PlusValue());
                     break;
+                case "-":
+                    resultList.add(new MinusValue());
+                    break;
+                case "*":
+                    resultList.add(new MultiValue());
+                    break;
+                case "/":
+                    resultList.add(new DivideValue());
+                    break;
                 default:    // その他は数値として扱う
                     resultList.add(new DecimalValue(text));
                     break;
             }
         }
         return resultList;
+    }
+
+    public static void main(String[] args) {
+        System.out.print("入力）");
+        Scanner scan = new Scanner(System.in);
+        String input = scan.nextLine();
+        scan.close();
+
+        Stack<BigDecimal> values = new Stack<>();
+        parseLine(input).forEach(iValue -> {
+            iValue.execute(values);
+        });
+        System.out.println("出力）" + values.pop());
     }
 }
 // 完成までの時間: xx時間 xx分
