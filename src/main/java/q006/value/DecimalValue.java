@@ -21,4 +21,8 @@ public class DecimalValue implements IValue {
         // スタックに値を積む
         values.push(value);
     }
+
+    public BigDecimal getValue() {
+        return value;
+    }
 }
