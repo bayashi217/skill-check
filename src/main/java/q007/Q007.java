@@ -27,17 +27,7 @@ XXXXXXXXX
  */
 public class Q007 {
     public static void main(String[] args) {
-//        Maze maze = MazeFactory.create(new MazeInputStream());
-        String[][] mazeString = {
-                {"X","X","X","X","X","X","X"},
-                {"X","S"," "," "," ","X","X"},
-                {"X"," ","X","X","X","X","X"},
-                {"X","X"," ","X"," ","X","X"},
-                {"X","X"," ","X"," ","X","X"},
-                {"X","X"," "," "," ","E","X"},
-                {"X","X","X","X","X","X","X"}
-        };
-        Maze maze = new Maze(mazeString);
+        Maze maze = MazeFactory.create(new MazeInputStream());
         System.out.println("[迷路] width: " + maze.wight() + ", height:" + maze.height() + "\n" + maze);
         System.out.println("[答え]\n" + maze.shortestRouteLength());
     }
