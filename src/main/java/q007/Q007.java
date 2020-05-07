@@ -32,4 +32,4 @@ public class Q007 {
         System.out.println("[答え]\n" + maze.shortestRouteLength());
     }
 }
-// 完成までの時間: 01時間53分58秒
+// 完成までの時間: 01時間23分58秒
