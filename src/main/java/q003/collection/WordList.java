@@ -3,6 +3,7 @@ package q003.collection;
 import q003.model.Word;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class WordList {
@@ -31,8 +32,12 @@ public class WordList {
         return new WordList(filter.stream().map(word ->
             new Word(
                 word.getWord(),
-                (int) filter.stream().filter(value -> value.equalWord(word.getWord())).count()
+                countBy(word)
             )
         ).distinct().collect(Collectors.toList()));
+    }
+
+    private Integer countBy(Word word) {
+        return (int) filter.stream().filter(word::equals).count();
     }
 }
