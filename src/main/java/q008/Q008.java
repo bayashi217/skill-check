@@ -1,10 +1,17 @@
 package q008;
 
+import q008.collection.JavaFileList;
+import q008.entity.JavaFile;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,5 +43,29 @@ public class Q008 {
     private static Stream<File> listJavaFiles() throws IOException {
         return Files.walk(Paths.get(".")).map(Path::toFile).filter(f -> f.getName().endsWith(".java"));
     }
+
+    public static void main(String[] args) {
+        try {
+            JavaFileList javaFileList = new JavaFileList(listJavaFiles().map(file -> {
+                try {
+                    BufferedReader reader =  Files.newBufferedReader(file.toPath());
+                    List<String> resources = reader.lines().collect(Collectors.toList());
+                    return new JavaFile(
+                            file.toPath().toString(),
+                            resources
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return new JavaFile(
+                            file.toPath().toString(),
+                            Collections.emptyList()
+                    );
+                }
+            }).collect(Collectors.toList()));
+            javaFileList.getHasEmbeddedStringResourceList().print();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 00時間39分17秒
