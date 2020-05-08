@@ -1,5 +1,13 @@
 package q009;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
 /**
  * Q009 重い処理を別スレッドで実行
  *
@@ -10,17 +18,47 @@ package q009;
  * - 素因数分解の効率的なアルゴリズムを求めるのが問題ではないため、あえて単純なアルゴリズムで良い（遅いほどよい）
  *   （例えば、2および3以上の奇数で割り切れるかを全部チェックする方法でも良い）
  * - BigIntegerなどを使って、大きな数値も扱えるようにしてください
-[実行イメージ]
-入力) 65536
-入力)
-65536: 実行中  <-- もし65536の素因数分解が実行中だった場合はこのように表示する
-入力) 12345
-入力)
-65536: 2      <-- 実行が終わっていたら結果を表示する。2の16乗だが、16乗の部分の表示は不要（複数溜まっていた場合の順番は問わない）
-12345: 実行中
-入力)
-12345: 3,5,823
+ [実行イメージ]
+ 入力) 65536
+ 入力)
+ 65536: 実行中  <-- もし65536の素因数分解が実行中だった場合はこのように表示する
+ 入力) 12345
+ 入力)
+ 65536: 2      <-- 実行が終わっていたら結果を表示する。2の16乗だが、16乗の部分の表示は不要（複数溜まっていた場合の順番は問わない）
+ 12345: 実行中
+ 入力)
+ 12345: 3,5,823
  */
 public class Q009 {
+    public static void main(String[] args) {
+        WrapScanner scan = new WrapScanner();
+        List<PrimeFactorization> primeFactorizationList = new ArrayList<>(Collections.emptyList());
+
+        String input;
+        while(!(input = scan.nextLine()).equals("exit")) {
+            if (input.equals("")) {
+                primeFactorizationList = primeFactorizationList.stream().filter(primeFactorization -> {
+                    if (primeFactorization.getState() == Thread.State.TERMINATED) {
+                        System.out.println(primeFactorization.getNumber() + ": "
+                            + primeFactorization
+                            .getPrimes()
+                            .stream()
+                            .map(Objects::toString)
+                            .collect(Collectors.joining(",")));
+                        return false;
+                    }
+                    System.out.println(primeFactorization.getNumber() + ": 実行中");
+                    return true;
+                }).collect(Collectors.toList());
+            } else if (input.matches("[0-9]+")) {
+                PrimeFactorization primeFactorization = new PrimeFactorization(input);
+                primeFactorization.start();
+                primeFactorizationList.add(primeFactorization);
+            } else {
+                System.out.println("数値を入力して");
+            }
+        }
+        scan.close();
+    }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 01時間11分18秒
