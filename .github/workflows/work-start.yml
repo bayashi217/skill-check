@@ -8,6 +8,7 @@ on:
 
 jobs:
   work-start:
+    if: contains(github.ref, 'feature/q') || contains(github.ref, 'feature/Q')
     runs-on: ubuntu-latest
     env:
       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
