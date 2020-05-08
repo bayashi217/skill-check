@@ -1,11 +1,13 @@
 package q003;
 
 
+import q003.model.File;
+
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Q003 集計と並べ替え
@@ -39,33 +41,11 @@ public class Q003 {
         return Q003.class.getResourceAsStream("data.txt");
     }
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(openDataFile()));
-        String del = "[ \\s,.;]";
-        HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] words = line.split(del);
-            for (String word : words) {
-                String lowerWord = word.toLowerCase();
-                if (lowerWord.equals("-") || lowerWord.equals("")) {
-                    continue;
-                }
-
-                if (!dictionary.containsKey(lowerWord)) {
-                    dictionary.put(lowerWord, 0);
-                }
-                dictionary.replace(lowerWord, dictionary.get(lowerWord) + 1);
-            }
-        }
-        Map<String, Integer> tree = new TreeMap<>(dictionary);
-        for (String word : tree.keySet()) {
-            String viewWord = word;
-            if (viewWord.equals("i")) {
-                viewWord = word.toUpperCase();
-            }
-            System.out.println(viewWord + "=" + tree.get(word));
-        }
+    public static void main(String[] args) {
+        File file = new File(
+            new BufferedReader(new InputStreamReader(openDataFile())).lines().collect(Collectors.toList())
+        );
+        file.getWordList().uniqAndCount().getList().stream().sorted().forEach(System.out::println);
     }
 }
-// 完成までの時間: 00時間54分03秒
+// 完成までの時間: 01時間30分00秒
